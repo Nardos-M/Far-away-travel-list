@@ -23,6 +23,17 @@ function Logo() {
 function Form() {
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [items, setItem] = useState([]);
+
+  function handleAddItems(item) {
+    // adding new item with out mutating the original one
+    // ...items is an array with the rest of the items in the array. and item is the new one thats going to be added
+    setItem((items) => [...items, item]);
+
+    //so the item is on hte form component but it should be displayed in the packing list
+    // we need to pass that but via props is not the actual way coz the form by itself is not parent component 
+    // instead we need to lift up the state
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -32,6 +43,8 @@ function Form() {
 
     const newItem = { description, quantity, packed: false, id: Date.now() };
     console.log(newItem);
+
+    handleAddItems(newItem);
 
     //once submit button is clicked it set it to its default state
     setDescription("");
@@ -87,7 +100,7 @@ function Item({ item }) {
 function Stats() {
   return (
     <footer className="stats">
-      <em>💼 you have X items onn your list, and you already packed X (X%)</em>
+      <em>💼 you have X items on your list, and you already packed X (X%)</em>
     </footer>
   );
 }
