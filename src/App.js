@@ -7,11 +7,17 @@ const initialItems = [
 ];
 
 export default function App() {
+  const [items, setItem] = useState([]);
+
+  function handleAddItems(item) {
+    setItem((items) => [...items, item]);
+  }
+
   return (
     <div className="app">
       <Logo />
-      <Form />
-      <PackingList />
+      <Form onAddItems={handleAddItems} />
+      <PackingList items={items} />
       <Stats />
     </div>
   );
@@ -20,11 +26,11 @@ function Logo() {
   return <h1>🌴 Far Away 💼</h1>;
 }
 
-function Form() {
+function Form({onAddItems}) {
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const [items, setItem] = useState([]);
 
+  /* this function is moved to the parent component
   function handleAddItems(item) {
     // adding new item with out mutating the original one
     // ...items is an array with the rest of the items in the array. and item is the new one thats going to be added
@@ -34,6 +40,7 @@ function Form() {
     // we need to pass that but via props is not the actual way coz the form by itself is not parent component 
     // instead we need to lift up the state
   }
+    */
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -44,7 +51,11 @@ function Form() {
     const newItem = { description, quantity, packed: false, id: Date.now() };
     console.log(newItem);
 
-    handleAddItems(newItem);
+    //handleAddItems(newItem); this is replaced by next line coz the function is also lifted 
+    // and now passed through props
+
+    onAddItems(newItem);
+
 
     //once submit button is clicked it set it to its default state
     setDescription("");
@@ -75,11 +86,11 @@ function Form() {
   );
 }
 
-function PackingList() {
+function PackingList({ items }) {
   return (
     <div className="list">
       <ul>
-        {initialItems.map((item) => (
+        {items.map((item) => (
           <Item item={item} key={item.id} />
         ))}
       </ul>
